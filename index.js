@@ -23,7 +23,8 @@ app.get("/get-lead-information", (req, res) => {
   }
 
   let leadNumber = req.query.leadNumber;
-  const url = "https://partners.softwareconnect.com/#/lead/" + leadNumber;
+  const url = "https://" + req.query.link + leadNumber;
+  console.log(url);
 
   const username = req.query.username;
   const password = req.query.password;
@@ -92,6 +93,14 @@ app.get("/get-lead-information", (req, res) => {
     );
     let contactName = await page.evaluate(
       () => document.querySelectorAll(".name.ng-binding")[0].innerHTML
+    );
+    let contactFirstName = await page.evaluate(
+      () =>
+        document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[0]
+    );
+    let contactLastName = await page.evaluate(
+      () =>
+        document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[1]
     );
     let contactPosition = await page.evaluate(
       () =>
@@ -228,6 +237,8 @@ app.get("/get-lead-information", (req, res) => {
       businessHours: businessHours,
       interviewRecording: interviewRecording,
       contactName: contactName,
+      contactFirstName: contactFirstName,
+      contactLastName: contactLastName,
       contactPosition: contactPosition,
       contactEmail: contactEmail,
       contactPhone: contactPhone,
