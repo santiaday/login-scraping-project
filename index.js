@@ -222,6 +222,7 @@ app.get("/get-lead-information", (req, res) => {
     await browser.close();
 
     let response = {
+      leadDescription: leadDescription,
       companyName: companyName,
       location: location,
       businessHours: businessHours,
