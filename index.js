@@ -1,18 +1,23 @@
 const express = require("express");
 const app = express();
-const path = require("path");
-const puppeteer = require("puppeteer");
 
-app.listen(process.env.PORT || 3000);
+let chrome = {};
+let puppeteer;
+
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+  chrome = require("chrome-aws-lambda");
+  puppeteer = require("puppeteer-core");
+} else {
+  puppeteer = require("puppeteer");
+}
+
+app.listen(process.env.PORT || 3000, () => {
+  console.log("Server started");
+});
 
 app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-  res.sendFile("index.html", { root: path.join(__dirname, "public") });
-});
-
 app.get("/get-lead-information", (req, res) => {
-  console.log(req.query.token);
   if (req.query.token !== "wn^$$5SU6a972YvG") {
     res.send("Not authorized");
   }
@@ -23,13 +28,23 @@ app.get("/get-lead-information", (req, res) => {
   const username = req.query.username;
   const password = req.query.password;
 
-  console.log(username);
-  console.log(password);
   let pageData = "";
 
   (async () => {
     // Launch a headless web browser
-    const browser = await puppeteer.launch();
+    let options = {};
+
+    if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+      options = {
+        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: chrome.defaultViewport,
+        executablePath: await chrome.executablePath,
+        headless: true,
+        ignoreHTTPSErrors: true,
+      };
+    }
+
+    const browser = await puppeteer.launch(options);
 
     // Open a new page and navigate to the login page
     const page = await browser.newPage();
