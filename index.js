@@ -64,9 +64,10 @@ app.get("/get-lead-information", (req, res) => {
     // Wait for the page to load and then print the page content
     await page.waitForNavigation();
     pageData = await page.evaluate(() => document.querySelector("*").outerHTML);
+
     let leadDescription = await page.evaluate(() =>
       document.getElementsByClassName("specsheet-intro ng-binding")[0]
-        .innerHTML === "undefined"
+        .innerHTML === undefined
         ? ""
         : document.getElementsByClassName("specsheet-intro ng-binding")[0]
             .innerHTML
@@ -74,7 +75,7 @@ app.get("/get-lead-information", (req, res) => {
     let companyName = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[0]
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[0]
@@ -84,7 +85,7 @@ app.get("/get-lead-information", (req, res) => {
     let location = await page.evaluate(() =>
       document.querySelectorAll(
         "span[ng-bind-html='Lead.Referral.Match.Company.Location.Address | inlineAddress'] a"
-      )[0].innerHTML === "undefined"
+      )[0].innerHTML === undefined
         ? ""
         : document
             .querySelectorAll(
@@ -95,7 +96,7 @@ app.get("/get-lead-information", (req, res) => {
     let businessHours = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[1]
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[1]
@@ -133,13 +134,13 @@ app.get("/get-lead-information", (req, res) => {
     let interviewedBy = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[2]
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[2]
             .innerHTML.split("</strong>")[1]
             .trim()
-            .split(" \x3c")[0] === "undefined"
+            .split(" \x3c")[0] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[2]
@@ -151,7 +152,7 @@ app.get("/get-lead-information", (req, res) => {
     let generalLocation = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[3]
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[3]
@@ -161,7 +162,7 @@ app.get("/get-lead-information", (req, res) => {
     let industry = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[4]
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[4]
@@ -171,7 +172,7 @@ app.get("/get-lead-information", (req, res) => {
     let annualSales = await page.evaluate(() =>
       document
         .querySelector('li[ng-show="Lead.Specs.Company.AnnualSales"]')
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelector('li[ng-show="Lead.Specs.Company.AnnualSales"]')
@@ -181,7 +182,7 @@ app.get("/get-lead-information", (req, res) => {
     let numberOfEmployees = await page.evaluate(() =>
       document
         .querySelector('li[ng-show="Lead.Specs.Company.Employees"]')
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelector('li[ng-show="Lead.Specs.Company.Employees"]')
@@ -197,7 +198,7 @@ app.get("/get-lead-information", (req, res) => {
     let timeframe = await page.evaluate(() =>
       document
         .querySelector('li[ng-show="Lead.Specs.Timeframe"]')
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelector('li[ng-show="Lead.Specs.Timeframe"]')
@@ -214,7 +215,7 @@ app.get("/get-lead-information", (req, res) => {
     let spendingExpectations = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[9]
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[9]
@@ -224,7 +225,7 @@ app.get("/get-lead-information", (req, res) => {
     let spending3YearTCO = await page.evaluate(() =>
       document
         .querySelector('li[ng-if="Lead.Specs.Budget.Calculation"]')
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelector('li[ng-if="Lead.Specs.Budget.Calculation"]')
@@ -236,7 +237,7 @@ app.get("/get-lead-information", (req, res) => {
         .querySelector(
           'li[ng-if="Lead.Specs.Infrastructure.CurrentSystem.Product.Name"]'
         )
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelector(
@@ -248,7 +249,7 @@ app.get("/get-lead-information", (req, res) => {
     let deployment = await page.evaluate(() =>
       document
         .querySelector('li[ng-if="Lead.Specs.Deployment"]')
-        .innerHTML.split("</strong>")[1] === "undefined"
+        .innerHTML.split("</strong>")[1] === undefined
         ? ""
         : document
             .querySelector('li[ng-if="Lead.Specs.Deployment"]')
@@ -272,7 +273,7 @@ app.get("/get-lead-information", (req, res) => {
     let industryExpertiseImportance = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[14]
-        .innerText.split("\n")[1] === "undefined"
+        .innerText.split("\n")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[14]
@@ -282,7 +283,7 @@ app.get("/get-lead-information", (req, res) => {
     let localSupportImportance = await page.evaluate(() =>
       document
         .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[15]
-        .innerText.split("\n")[1] === "undefined"
+        .innerText.split("\n")[1] === undefined
         ? ""
         : document
             .querySelectorAll("ul.specsheet-answers-content li.ng-binding")[15]
