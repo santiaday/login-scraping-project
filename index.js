@@ -104,32 +104,49 @@ app.get("/get-lead-information", (req, res) => {
             .trim()
     );
     let interviewRecording = await page.evaluate(
-      () => document.querySelectorAll(".specsheet-phone-recording")[0].href
+      () => document.querySelectorAll(".specsheet-phone-recording")[0] === undefined
+        ? ""
+        : document.querySelectorAll(".specsheet-phone-recording")[0].href === undefined
+        ? ""
+        : document.querySelectorAll(".specsheet-phone-recording")[0].href
     );
     let contactName = await page.evaluate(
-      () => document.querySelectorAll(".name.ng-binding")[0].innerHTML
-    );
+      () => document.querySelectorAll(".name.ng-binding")[0] === undefined
+        ? ""
+        : document.querySelectorAll(".name.ng-binding")[0].innerHTML
+    ); 
     let contactFirstName = await page.evaluate(
       () =>
-        document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[0]
+        document.querySelectorAll(".name.ng-binding")[0] === undefined
+        ? ""
+        : document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[0]
     );
     let contactLastName = await page.evaluate(
       () =>
-        document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[1]
+                document.querySelectorAll(".name.ng-binding")[0] === undefined
+        ? ""
+        : document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[1]
     );
     let contactPosition = await page.evaluate(
       () =>
         document
+          .querySelectorAll(".job-title.ng-binding.ng-scope")[0] === undefined
+        ? ""
+        : document
           .querySelectorAll(".job-title.ng-binding.ng-scope")[0]
           .innerHTML.split("\x3C")[0]
     );
     let contactEmail = await page.evaluate(
       () =>
-        document.querySelectorAll(".email.ng-binding.ng-scope a")[0].innerHTML
+        document.querySelectorAll(".email.ng-binding.ng-scope a")[0] === undefined
+        ? ""
+        : document.querySelectorAll(".email.ng-binding.ng-scope a")[0].innerHTML
     );
     let contactPhone = await page.evaluate(
       () =>
-        document.querySelectorAll(".phone.ng-binding.ng-scope a")[0].innerHTML
+        document.querySelectorAll(".phone.ng-binding.ng-scope a")[0]=== undefined
+        ? ""
+        : document.querySelectorAll(".phone.ng-binding.ng-scope a")[0].innerHTML
     );
     let interviewedBy = await page.evaluate(() =>
       document
@@ -193,6 +210,10 @@ app.get("/get-lead-information", (req, res) => {
       () =>
         document.querySelector(
           'li[ng-show="Lead.Specs.ConcurrentUsers || Lead.Specs.NamedUsers"] span'
+        )  === undefined
+        ? ""
+        : document.querySelector(
+          'li[ng-show="Lead.Specs.ConcurrentUsers || Lead.Specs.NamedUsers"] span'
         ).innerHTML
     );
     let timeframe = await page.evaluate(() =>
@@ -208,6 +229,10 @@ app.get("/get-lead-information", (req, res) => {
     let functionalityRequirements = await page.evaluate(
       () =>
         document.querySelectorAll(
+          ".specsheet-answers-applist-app-name.ng-binding"
+        )[0]  === undefined
+        ? ""
+        : document.querySelectorAll(
           ".specsheet-answers-applist-app-name.ng-binding"
         )[0].innerHTML
     );
@@ -257,7 +282,10 @@ app.get("/get-lead-information", (req, res) => {
             .trim()
     );
     let interviewNotes = await page.evaluate(() =>
-      Array.from(
+        document.querySelector('div[ng-bind-html="Lead.Notes.Interview"] p')
+        === undefined
+        ? ""
+        : Array.from(
         document.querySelectorAll('div[ng-bind-html="Lead.Notes.Interview"] p')
       )
         .map((paragraph) => {
@@ -267,7 +295,9 @@ app.get("/get-lead-information", (req, res) => {
     );
     let optionsRequested = await page.evaluate(
       () =>
-        document.querySelector('ng-pluralize[count="Lead.Info.Slots.Max"]')
+        document.querySelector('ng-pluralize[count="Lead.Info.Slots.Max"]') === undefined
+        ? ""
+        : document.querySelector('ng-pluralize[count="Lead.Info.Slots.Max"]')
           .innerHTML
     );
     let industryExpertiseImportance = await page.evaluate(() =>
@@ -291,7 +321,9 @@ app.get("/get-lead-information", (req, res) => {
             .trim()
     );
     let competition = await page.evaluate(() =>
-      Array.from(document.querySelectorAll("em.ng-binding"))
+     document.querySelectorAll("em.ng-binding")  === undefined
+        ? ""
+        : Array.from(document.querySelectorAll("em.ng-binding"))
         .map((paragraph) => {
           return paragraph.innerText;
         })
