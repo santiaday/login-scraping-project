@@ -393,15 +393,15 @@ app.get("/doorloop-verify-recaptcha", (req, res) => {
     .then((result) => {
       if (result.success) {
         console.log("SUCCESS    " + result);
-        res.send(result.success);
+        res.send(JSON.stringify(result));
       } else {
         console.log("Fail    " + JSON.stringify(result));
-        res.send(result.success);
+        res.send(JSON.stringify(result));
       }
     })
     .catch((error) => {
       console.log("SUPER FAILURE    " + error);
-      res.send(result.success);
+      res.send(JSON.stringify(result));
     });
 });
 
