@@ -368,4 +368,21 @@ app.get("/get-lead-information", (req, res) => {
   })();
 });
 
+
+app.post("/doorloop-verify-recaptcha", (req, res) => {
+  fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    credentials: "include",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+      json: true,
+    },
+    body: new URLSearchParams({
+      secret: "6Lfhqc0kAAAAAK9COGs3JlHg0p5Hs5AnxdS6nMsv",
+      response: req.query.responseKey,
+    }),
+  }).then((response) => res.json(response));
+});
+
 module.exports = app;
