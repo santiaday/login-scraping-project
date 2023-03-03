@@ -370,19 +370,38 @@ app.get("/get-lead-information", (req, res) => {
 
 
 app.get("/doorloop-verify-recaptcha", (req, res) => {
-  fetch("https://www.google.com/recaptcha/api/siteverify", {
+  const secretKey = "6Lfhqc0kAAAAAK9COGs3JlHg0p5Hs5AnxdS6nMsv";
+  const responseKey = req.query.response;
+  const url = "https://www.google.com/recaptcha/api/siteverify";
+
+  const data = {
+    secret: secretKey,
+    response: responseKey,
+  };
+
+  const options = {
     method: "POST",
-    credentials: "include",
-    mode: "no-cors",
+    body: new URLSearchParams(data),
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      json: true,
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: new URLSearchParams({
-      secret: "6Lfhqc0kAAAAAK9COGs3JlHg0p5Hs5AnxdS6nMsv",
-      response: req.query.responseKey,
-    }),
-  }).then((response) => res.json(response));
+  };
+
+  fetch(url, options)
+    .then((response) => response.json())
+    .then((result) => {
+      if (result.success) {
+        console.log("SUCCESS    " + result);
+        res.send(result.success);
+      } else {
+        console.log("Fail    " + JSON.stringify(result));
+        res.send(result.success);
+      }
+    })
+    .catch((error) => {
+      console.log("SUPER FAILURE    " + error);
+      res.send(result.success);
+    });
 });
 
 module.exports = app;
