@@ -369,7 +369,7 @@ app.get("/get-lead-information", (req, res) => {
 });
 
 
-app.post("/doorloop-verify-recaptcha", (req, res) => {
+app.get("/doorloop-verify-recaptcha", (req, res) => {
   fetch("https://www.google.com/recaptcha/api/siteverify", {
     method: "POST",
     credentials: "include",
