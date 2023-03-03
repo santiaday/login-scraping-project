@@ -371,7 +371,8 @@ app.get("/get-lead-information", (req, res) => {
 
 
 app.get("/doorloop-verify-recaptcha", (req, res) => {
-  const secretKey = "6Lfhqc0kAAAAAK9COGs3JlHg0p5Hs5AnxdS6nMsv";
+  // const secretKey = "6Lfhqc0kAAAAAK9COGs3JlHg0p5Hs5AnxdS6nMsv";
+  const secretKey = "6Lc_Jc4kAAAAAMhnkiplZwy3kzJ4BaaIu3SN1_uQ";
   const responseKey = req.query.response;
   const url = "https://www.google.com/recaptcha/api/siteverify";
 
