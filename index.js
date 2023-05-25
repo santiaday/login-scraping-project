@@ -414,7 +414,7 @@ app.get("/getResourceDownload", (req, res) => {
     var requestOptions = {
       method: "GET",
       headers: {
-        Authorization: "Bearer pat-na1-87833f75-b592-4696-8aa9-1583c0c8567e",
+        Authorization: process.env.dbkey,
       },
       redirect: "follow",
     };
