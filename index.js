@@ -472,12 +472,14 @@ app.get("/webflowGithub", async (req, res) => {
     concurrency: Cluster.CONCURRENCY_PAGE,
     maxConcurrency: 100,
     puppeteerOptions: {
-      headless: true,
-      defaultViewport: false,
-      userDataDir: "./tmp",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+        defaultViewport: chrome.defaultViewport,
+        executablePath: await chrome.executablePath,
+        headless: true,
+        ignoreHTTPSErrors: true,
     },
   });
+ 
 
   await browser.task(async ({ page, data: pageUrl }) => {
     try {
