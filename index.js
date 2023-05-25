@@ -460,9 +460,9 @@ app.get("/webflowGithub", async (req, res) => {
   }
 
   const githubToken = [
-    "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",
-    "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",
-    "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",
+    process.env.webflowToken1,
+    process.env.webflowToken2,
+    process.env.webflowToken3,
   ];
   const githubRepoOwner = "santiaday";
   const githubRepoName = "dlWebflow";
