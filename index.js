@@ -1,8 +1,6 @@
 const express = require("express");
 const app = express();
 const fetch = require("node-fetch");
-const { Octokit } = require("@octokit/core");
-const { Cluster } = require("puppeteer-cluster");
 
 let chrome = {};
 let puppeteer;
