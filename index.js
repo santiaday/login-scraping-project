@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 const fetch = require("node-fetch");
+const { Octokit } = require("@octokit/core");
+const { Cluster } = require("puppeteer-cluster");
 
 let chrome = {};
 let puppeteer;
@@ -105,49 +107,32 @@ app.get("/get-lead-information", (req, res) => {
             .trim()
     );
     let interviewRecording = await page.evaluate(
-      () => document.querySelectorAll(".specsheet-phone-recording")[0] === undefined
-        ? ""
-        : document.querySelectorAll(".specsheet-phone-recording")[0].href === undefined
-        ? ""
-        : document.querySelectorAll(".specsheet-phone-recording")[0].href
+      () => document.querySelectorAll(".specsheet-phone-recording")[0].href
     );
     let contactName = await page.evaluate(
-      () => document.querySelectorAll(".name.ng-binding")[0] === undefined
-        ? ""
-        : document.querySelectorAll(".name.ng-binding")[0].innerHTML
-    ); 
+      () => document.querySelectorAll(".name.ng-binding")[0].innerHTML
+    );
     let contactFirstName = await page.evaluate(
       () =>
-        document.querySelectorAll(".name.ng-binding")[0] === undefined
-        ? ""
-        : document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[0]
+        document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[0]
     );
     let contactLastName = await page.evaluate(
       () =>
-                document.querySelectorAll(".name.ng-binding")[0] === undefined
-        ? ""
-        : document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[1]
+        document.querySelectorAll(".name.ng-binding")[0].innerHTML.split(" ")[1]
     );
     let contactPosition = await page.evaluate(
       () =>
         document
-          .querySelectorAll(".job-title.ng-binding.ng-scope")[0] === undefined
-        ? ""
-        : document
           .querySelectorAll(".job-title.ng-binding.ng-scope")[0]
           .innerHTML.split("\x3C")[0]
     );
     let contactEmail = await page.evaluate(
       () =>
-        document.querySelectorAll(".email.ng-binding.ng-scope a")[0] === undefined
-        ? ""
-        : document.querySelectorAll(".email.ng-binding.ng-scope a")[0].innerHTML
+        document.querySelectorAll(".email.ng-binding.ng-scope a")[0].innerHTML
     );
     let contactPhone = await page.evaluate(
       () =>
-        document.querySelectorAll(".phone.ng-binding.ng-scope a")[0]=== undefined
-        ? ""
-        : document.querySelectorAll(".phone.ng-binding.ng-scope a")[0].innerHTML
+        document.querySelectorAll(".phone.ng-binding.ng-scope a")[0].innerHTML
     );
     let interviewedBy = await page.evaluate(() =>
       document
@@ -211,10 +196,6 @@ app.get("/get-lead-information", (req, res) => {
       () =>
         document.querySelector(
           'li[ng-show="Lead.Specs.ConcurrentUsers || Lead.Specs.NamedUsers"] span'
-        )  === undefined
-        ? ""
-        : document.querySelector(
-          'li[ng-show="Lead.Specs.ConcurrentUsers || Lead.Specs.NamedUsers"] span'
         ).innerHTML
     );
     let timeframe = await page.evaluate(() =>
@@ -230,10 +211,6 @@ app.get("/get-lead-information", (req, res) => {
     let functionalityRequirements = await page.evaluate(
       () =>
         document.querySelectorAll(
-          ".specsheet-answers-applist-app-name.ng-binding"
-        )[0]  === undefined
-        ? ""
-        : document.querySelectorAll(
           ".specsheet-answers-applist-app-name.ng-binding"
         )[0].innerHTML
     );
@@ -283,10 +260,7 @@ app.get("/get-lead-information", (req, res) => {
             .trim()
     );
     let interviewNotes = await page.evaluate(() =>
-        document.querySelector('div[ng-bind-html="Lead.Notes.Interview"] p')
-        === undefined
-        ? ""
-        : Array.from(
+      Array.from(
         document.querySelectorAll('div[ng-bind-html="Lead.Notes.Interview"] p')
       )
         .map((paragraph) => {
@@ -296,9 +270,7 @@ app.get("/get-lead-information", (req, res) => {
     );
     let optionsRequested = await page.evaluate(
       () =>
-        document.querySelector('ng-pluralize[count="Lead.Info.Slots.Max"]') === undefined
-        ? ""
-        : document.querySelector('ng-pluralize[count="Lead.Info.Slots.Max"]')
+        document.querySelector('ng-pluralize[count="Lead.Info.Slots.Max"]')
           .innerHTML
     );
     let industryExpertiseImportance = await page.evaluate(() =>
@@ -322,9 +294,7 @@ app.get("/get-lead-information", (req, res) => {
             .trim()
     );
     let competition = await page.evaluate(() =>
-     document.querySelectorAll("em.ng-binding")  === undefined
-        ? ""
-        : Array.from(document.querySelectorAll("em.ng-binding"))
+      Array.from(document.querySelectorAll("em.ng-binding"))
         .map((paragraph) => {
           return paragraph.innerText;
         })
@@ -369,43 +339,74 @@ app.get("/get-lead-information", (req, res) => {
   })();
 });
 
+app.get("/getCapterraInfo", (req, res) => {
+  // if (req.query.token !== "wn^$$5SU6a972YvG") {
+  //   res.send("Not authorized");
+  // }
 
-app.get("/doorloop-verify-recaptcha", (req, res) => {
-  // const secretKey = "6Lfhqc0kAAAAAK9COGs3JlHg0p5Hs5AnxdS6nMsv";
-  const secretKey = "6Lc_Jc4kAAAAAMhnkiplZwy3kzJ4BaaIu3SN1_uQ";
-  const responseKey = req.query.response;
-  const url = "https://www.google.com/recaptcha/api/siteverify";
+  const url = "https://" + req.query.link + "/clicks";
+  console.log(url);
 
-  const data = {
-    secret: secretKey,
-    response: responseKey,
-  };
+  const username = req.query.username;
+  const password = req.query.password;
 
-  const options = {
-    method: "POST",
-    body: new URLSearchParams(data),
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
+  let pageData = "";
 
-  fetch(url, options)
-    .then((response) => response.json())
-    .then((result) => {
-      if (result.success) {
-        console.log("SUCCESS    " + result);
-        res.send(JSON.stringify(result));
-      } else {
-        console.log("Fail    " + JSON.stringify(result));
-        res.send(JSON.stringify(result));
-      }
-    })
-    .catch((error) => {
-      console.log("SUPER FAILURE    " + error);
-      res.send(JSON.stringify(result));
-    });
+  (async () => {
+    // Launch a headless web browser
+    let options = {};
+
+    if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+      options = {
+        args: [
+          ...chrome.args,
+          "--hide-scrollbars",
+          "--disable-web-security",
+          "--enable-features=ExperimentalJavaScript",
+        ],
+        defaultViewport: chrome.defaultViewport,
+        executablePath: await chrome.executablePath,
+        headless: false,
+        ignoreHTTPSErrors: true,
+      };
+    }
+
+    try {
+      const browser = await puppeteer.launch(options);
+
+      // Open a new page and navigate to the login page
+      const page = await browser.newPage();
+      await page.goto("https://digitalmarkets.gartner.com/clicks");
+      await page.screenshot({
+        path: "screenshot.jpg",
+      });
+
+      // Find the username and password input fields and fill them in
+      await page.waitForSelector('input[name="email"]');
+      await page.type('input[name="email"]', "david@doorloop.com");
+      await page.waitForSelector('input[name="password"]');
+      await page.type('input[name="password"]', "HXU0gjk_bdq0wet.ecz");
+
+      // Find the login button and click it
+      await page.waitForSelector('button[type="submit"]');
+
+      await Promise.all([
+        await page.click('button[type="submit"]'),
+        page.waitForNavigation({ waitUntil: "networkidle0" }),
+        console.log(await page.content()),
+      ]);
+
+      await page.screenshot({
+        path: "screenshot2.jpg",
+      });
+
+      // Close the browser window
+      await browser.close();
+    } catch (e) {
+      console.log(e);
+    }
+  })();
 });
-
 
 app.get("/getResourceDownload", (req, res) => {
   const slug = req.query.slug;
@@ -435,6 +436,158 @@ app.get("/getResourceDownload", (req, res) => {
     res.set("Content-Type", "text/html");
     res.send(JSON.stringify(response));
   })();
+});
+
+app.get("/webflowGithub", async (req, res) => {
+  const siteUrl = "https://www.doorloop.com/sitemap.xml";
+  async function extractLinks(page, url) {
+    await page.goto(url, { waitUntil: "networkidle2" });
+
+    let content = await page.content();
+    const regex =
+      /https:\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?/g;
+    const links = Array.from(new Set(content.match(regex)));
+
+    return links;
+  }
+
+  async function getAllPageUrls() {
+    const browser = await puppeteer.launch();
+
+    const page = await browser.newPage();
+
+    return extractLinks(page, siteUrl);
+  }
+
+  const githubToken = [
+    "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",
+    "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",
+    "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",
+  ];
+  const githubRepoOwner = "santiaday";
+  const githubRepoName = "dlWebflow";
+
+  const pages = await getAllPageUrls(siteUrl);
+  const browser = await Cluster.launch({
+    concurrency: Cluster.CONCURRENCY_PAGE,
+    maxConcurrency: 100,
+    puppeteerOptions: {
+      headless: true,
+      defaultViewport: false,
+      userDataDir: "./tmp",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    },
+  });
+
+  await browser.task(async ({ page, data: pageUrl }) => {
+    try {
+      await page.goto(pageUrl, { waitUntil: "networkidle0" });
+      page.setJavaScriptEnabled(false);
+      const fullPath = pageUrl.split("https://www.doorloop.com/")[1] + ".html";
+
+      await page.evaluate(() => {
+        const elements = document.querySelectorAll("figure, svg, meta, img");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].parentNode.removeChild(elements[i]);
+        }
+      });
+
+      await page.evaluate(() => {
+        const scripts = Array.from(document.querySelectorAll("script[src]"));
+        scripts.forEach((script) => {
+          if (
+            script.src.includes("gstatic") ||
+            script.src.includes("recaptcha") ||
+            script.src.includes("http")
+          ) {
+            script.parentNode.removeChild(script);
+          }
+        });
+      });
+
+      await page.evaluate(() => {
+        const inputs = Array.from(document.querySelectorAll("input"));
+        inputs.forEach((input) => {
+          input.removeAttribute("id");
+        });
+      });
+
+      const content = await page.evaluate(
+        () => document.querySelector("*").outerHTML
+      );
+
+      const octokit = new Octokit({
+        auth: githubToken[Math.floor(Math.random() * 3) + 1],
+      });
+      let existingContent = "";
+
+      try {
+        const response = await octokit.request(
+          "GET /repos/{owner}/{repo}/contents/{path}",
+          {
+            owner: "ownerUsername",
+            repo: "repositoryName",
+            path: "path/to/file",
+          }
+        );
+
+        existingContent = Buffer.from(
+          response.data.content,
+          "base64"
+        ).toString();
+      } catch (error) {
+        console.error("Error occurred:", error);
+      }
+
+      const { data: getFileData } = await octokit.request(
+        "GET /repos/{owner}/{repo}/contents/{path}",
+        {
+          owner: githubRepoOwner,
+          repo: githubRepoName,
+          path: fullPath,
+        }
+      );
+
+      // Get the SHA of the file.
+      const sha = getFileData.sha;
+
+      if (existingContent == content) {
+        console.log(`Skipping ${fullPath}, content is the same, PART 2`);
+        return;
+      } else {
+        console.log("Not matched");
+      }
+
+      await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+        owner: githubRepoOwner,
+        repo: githubRepoName,
+        path: fullPath,
+        message: `Update ${fullPath}`,
+        content: Buffer.from(content).toString("base64"),
+        sha,
+      });
+      if (error.status === 404) {
+        await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
+          owner: githubRepoOwner,
+          repo: githubRepoName,
+          path: fullPath,
+          message: `Create ${fullPath}`,
+          content: Buffer.from(content).toString("base64"),
+        });
+      } else {
+        console.error(`Error committing file ${fullPath} to GitHub:`, error);
+      }
+    } catch (error) {
+      console.error("Error processing the Webflow site pages:", error);
+    }
+  });
+
+  for (const pageUrl of pages) {
+    await browser.queue(pageUrl);
+  }
+
+  await browser.idle();
+  await browser.close();
 });
 
 module.exports = app;
