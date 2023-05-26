@@ -441,6 +441,7 @@ app.get("/getResourceDownload", (req, res) => {
 const chrome2 = require("chrome-aws-lambda");
 
 app.get("/webflowGithub", async (req, res) => {
+  res.json("Uploading changes...");
   const siteUrl = "https://www.doorloop.com/sitemap.xml";
   async function extractLinks(page, url) {
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -594,6 +595,7 @@ app.get("/webflowGithub", async (req, res) => {
 
   await browser.idle();
   await browser.close();
+  return;
 });
 
 module.exports = app;
