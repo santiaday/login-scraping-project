@@ -441,8 +441,9 @@ app.get("/getResourceDownload", (req, res) => {
 const chrome2 = require("chrome-aws-lambda");
 
 app.get("/webflowGithub", async (req, res) => {
-  res.status(200).send({ success: true });
   console.log("sent response");
+  res.status(200).send({ success: true });
+  
   const siteUrl = "https://www.doorloop.com/sitemap.xml";
   async function extractLinks(page, url) {
     await page.goto(url, { waitUntil: "networkidle2" });
