@@ -438,6 +438,8 @@ app.get("/getResourceDownload", (req, res) => {
   })();
 });
 
+const chrome2 = require("chrome-aws-lambda");
+
 app.get("/webflowGithub", async (req, res) => {
   const siteUrl = "https://www.doorloop.com/sitemap.xml";
   async function extractLinks(page, url) {
@@ -452,8 +454,11 @@ app.get("/webflowGithub", async (req, res) => {
   }
 
   async function getAllPageUrls() {
-    const browser = await puppeteer.launch();
-
+    const browser = await puppeteer.launch({
+      args: chrome2.args,
+      executablePath: await chrome2.executablePath,
+      headless: chrome2.headless,
+    });
     const page = await browser.newPage();
 
     return extractLinks(page, siteUrl);
@@ -472,14 +477,13 @@ app.get("/webflowGithub", async (req, res) => {
     concurrency: Cluster.CONCURRENCY_PAGE,
     maxConcurrency: 100,
     puppeteerOptions: {
-        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
-        defaultViewport: chrome.defaultViewport,
-        executablePath: await chrome.executablePath,
-        headless: true,
-        ignoreHTTPSErrors: true,
+      args: chrome2.args,
+      defaultViewport: chrome2.defaultViewport,
+      executablePath: await chrome2.executablePath,
+      headless: chrome2.headless,
+      ignoreHTTPSErrors: true,
     },
   });
- 
 
   await browser.task(async ({ page, data: pageUrl }) => {
     try {
