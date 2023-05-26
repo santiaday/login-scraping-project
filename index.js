@@ -488,6 +488,7 @@ app.get("/webflowGithub", async (req, res) => {
 
   await browser.task(async ({ page, data: pageUrl }) => {
     try {
+      console.log("heyyyy")
       await page.goto(pageUrl, { waitUntil: "networkidle0" });
       page.setJavaScriptEnabled(false);
       const fullPath = pageUrl.split("https://www.doorloop.com/")[1] + ".html";
