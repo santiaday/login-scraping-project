@@ -408,36 +408,6 @@ app.get("/getCapterraInfo", (req, res) => {
   })();
 });
 
-app.get("/getResourceDownload", (req, res) => {
-  const slug = req.query.slug;
-
-  (async () => {
-    var requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: process.env.dbkey,
-      },
-      redirect: "follow",
-    };
-
-    const object = await fetch(
-      "https://api.hubapi.com/cms/v3/hubdb/tables/6365186/rows?resource_slug=" +
-        slug,
-      requestOptions
-    ).then((response) => response.json());
-
-    let response = "";
-
-    if (object.results[0].values.resource_download_url) {
-      response = object.results[0].values.resource_download_url;
-    } else {
-      response = object.results[0].values.zip_file_url;
-    }
-    res.set("Content-Type", "text/html");
-    res.send(JSON.stringify(response));
-  })();
-});
-
 const chrome2 = require("chrome-aws-lambda");
 
 app.get("/webflowGithub", async (req, res) => {
