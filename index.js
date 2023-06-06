@@ -580,24 +580,31 @@ app.get("/webflowGithub", async (req, res) => {
 const { Configuration, OpenAIApi } = require("openai");
 
 app.get("/generate-text", async (req, res) => {
-  console.log(req.query.prompt);
+  const prompt = decodeURIComponent(req.query.prompt);
+  console.log(prompt);
+
   const configuration = new Configuration({
     apiKey: process.env.openai,
   });
+  
   const openai = new OpenAIApi(configuration);
   try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: "You: " + req.query.prompt + " \n Real estate chatbot:",
-      temperature: 0,
-      max_tokens: 100,
-      top_p: 1,
-      frequency_penalty: 0.5,
-      presence_penalty: 0,
-      stop: ["You:"],
+    // Separate the conversation into system, user, and assistant messages
+    const messages = prompt.split('\n').map((line, index) => {
+      const [role, content] = line.split(': ');
+      return {role: role.toLowerCase(), content: content};
     });
-    console.log(response.data.choices[0].text);
-    res.send(response.data.choices[0].text);
+    
+    const response = await openai.createCompletion({
+      model: "gpt-3.5-turbo",
+      messages: messages,
+    });
+
+    const botResponse = response.data.choices[0].message.content;
+    console.log(botResponse);
+    
+    res.send(botResponse);
+    
   } catch (error) {
     console.error(error);
   }
