@@ -593,8 +593,6 @@ app.get("/webflowGithub", async (req, res) => {
 
 const { Configuration, OpenAIApi } = require("openai");
 
-import { Configuration, OpenAIApi } from "openai";
-
 app.post("/generate-text", async (req, res) => {
   const prompt = decodeURIComponent(req.query.prompt);
 
