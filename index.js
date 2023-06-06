@@ -647,22 +647,12 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   // Open a new page and navigate to the login page
   const page = await browser.newPage();
   await page.goto(
-    "https://www.biggerpockets.com/forums/521-real-estate-events-meetups" , { waitUntil: "networkidle0" }
+    "https://www.biggerpockets.com/forums/521-real-estate-events-meetups"
   );
 
   
   
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
-  
-  let allLinks = await page.evaluate(() => {
-    Array.from(
-      document.querySelectorAll("a.simplified-forums__topic-content__link")
-    )
-      ? ""
-      : Array.from(
-          document.querySelectorAll("a.simplified-forums__topic-content__link")
-        )
-  });
 
 
   let floridaEvents = await page.evaluate((variations) => {
@@ -686,7 +676,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   }, variations);
 
   console.log(floridaEvents);
-  res.send(await allLinks);
+  res.send(floridaEvents);
     
   })
 });
