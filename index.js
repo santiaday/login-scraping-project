@@ -645,7 +645,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
       const title = $(element).text().toLowerCase();
       const link = $(element).attr('href');
       if (variations.some(variation => title.includes(variation))) {
-        floridaEvents.push({ title, "https://www.biggerpockets.com/" + link });
+        floridaEvents.push("https://www.biggerpockets.com/" + link);
       }
     });
 
