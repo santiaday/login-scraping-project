@@ -571,4 +571,30 @@ app.get("/webflowGithub", async (req, res) => {
   return;
 });
 
+const { Configuration, OpenAIApi } = require("openai");
+
+app.get("/generate-text", async (req, res) => {
+  console.log(req.query.prompt);
+  const configuration = new Configuration({
+    apiKey: "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",
+  });
+  const openai = new OpenAIApi(configuration);
+  try {
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: "You: " + req.query.prompt + " \n Real estate chatbot:",
+      temperature: 0,
+      max_tokens: 100,
+      top_p: 1,
+      frequency_penalty: 0.5,
+      presence_penalty: 0,
+      stop: ["You:"],
+    });
+    console.log(response.data.choices[0].text);
+    res.send(response.data.choices[0].text);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 module.exports = app;
