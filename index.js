@@ -653,7 +653,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
     });
 
     console.log(floridaEvents);
-    res.send(body);
+    res.send($);
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while scraping the site.' });
