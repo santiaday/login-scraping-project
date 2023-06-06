@@ -646,7 +646,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   // Open a new page and navigate to the login page
   const page = await browser.newPage();
   await page.goto(
-    "https://www.biggerpockets.com/forums/521-real-estate-events-meetups"
+    "https://www.biggerpockets.com/forums/521-real-estate-events-meetups" , { waitUntil: "networkidle0" }
   );
 
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
