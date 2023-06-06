@@ -650,10 +650,20 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   );
 
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
+  
+  let allLinks = await page.evaluate(() => {
+    Array.from(
+      document.querySelectorAll("a.simplified-forums__topic-content__link")
+    )
+      ? ""
+      : Array.from(
+          document.querySelectorAll("a.simplified-forums__topic-content__link")
+        )
+  });
 
 
   let floridaEvents = await page.evaluate((variations) => {
-    return Array.from(
+    Array.from(
       document.querySelectorAll("a.simplified-forums__topic-content__link")
     ).filter((link) =>
       variations.some((variation) =>
@@ -673,7 +683,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   }, variations);
 
   console.log(floridaEvents);
-  res.send(floridaEvents);
+  res.send(allLinks);
 });
 
 
