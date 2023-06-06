@@ -627,24 +627,20 @@ app.post("/generate-text", async (req, res) => {
 
   res.send(responseText);
 });
+
+const axios = require('axios');
 const cheerio = require('cheerio');
 
 app.get("/check-biggerpockets-forum", async (req, res) => {
   try {
     const variations = ["lend" , "lends"];
     const url = "https://www.biggerpockets.com/forums/521-real-estate-events-meetups";
+    const response = await axios.get(url);
 
-    const response = await fetch(url);
-    const body = await response.text();
-
-    const $ = cheerio.load(body);
-    
-    
+    const $ = cheerio.load(response.data);
 
     let floridaEvents = [];
-
     $("a.simplified-forums__topic-content__link").each((index, element) => {
-      floridaEvents.push(element)
       const title = $(element).text().toLowerCase();
       const link = $(element).attr('href');
       if (variations.some(variation => title.includes(variation))) {
@@ -653,7 +649,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
     });
 
     console.log(floridaEvents);
-    res.send($);
+    res.send(floridaEvents);
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while scraping the site.' });
