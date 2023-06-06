@@ -593,10 +593,15 @@ app.get("/generate-text", async (req, res) => {
   const openai = new OpenAIApi(configuration);
   try {
     // Separate the conversation into system, user, and assistant messages
-    const messages = prompt.split('\n').map((line, index) => {
-      const [role, content] = line.split(': ');
-      return {role: role.toLowerCase(), content: content};
-    });
+const messages = prompt.split('\n').map((line, index) => {
+  if (line.includes(': ')) {
+    const [role, content] = line.split(': ');
+    return {role: role.toLowerCase(), content: content};
+  } else {
+    console.error(`Invalid message format: ${line}`);
+    return null;
+  }
+}).filter(message => message !== null);
 
     // Ensure a system message is present
     if (!messages.some(message => message.role === 'system')) {
