@@ -629,6 +629,7 @@ app.post("/generate-text", async (req, res) => {
 });
 app.get("/check-biggerpockets-forum", async (req, res) => {
    const variations = ["lend" , "lends"];
+  (async () => {
   let options = {};
 
   if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
@@ -649,6 +650,8 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
     "https://www.biggerpockets.com/forums/521-real-estate-events-meetups" , { waitUntil: "networkidle0" }
   );
 
+  
+  
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
   
   let allLinks = await page.evaluate(() => {
@@ -684,6 +687,8 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 
   console.log(floridaEvents);
   res.send(await allLinks);
+    
+  })
 });
 
 
