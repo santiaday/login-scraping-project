@@ -20,6 +20,12 @@ app.listen(process.env.PORT || 3000, () => {
 
 app.use(express.static("public"));
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://santiaday.github.io"); // update to match the domain you will make the request from
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get("/get-lead-information", (req, res) => {
   if (req.query.token !== "wn^$$5SU6a972YvG") {
     res.send("Not authorized");
