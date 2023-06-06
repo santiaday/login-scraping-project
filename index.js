@@ -652,8 +652,8 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
 
 
-  let floridaEvents = await page.evaluate(() =>
-    Array.from(
+  let floridaEvents = await page.evaluate((variations) => {
+    return Array.from(
       document.querySelectorAll("a.simplified-forums__topic-content__link")
     ).filter((link) =>
       variations.some((variation) =>
@@ -669,8 +669,8 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
               link.innerText.toLowerCase().includes(variation)
             )
           )
-          .map((link) => [{ title: link.innerText }, { link: link.href }])
-  );
+          .map((link) => [{ title: link.innerText }, { link: link.href }]);
+  }, variations);
 
   console.log(floridaEvents);
   res.send(floridaEvents);
