@@ -638,8 +638,11 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
     const body = await response.text();
 
     const $ = cheerio.load(body);
+    
+    
 
     let floridaEvents = [];
+
     $("a.simplified-forums__topic-content__link").each((index, element) => {
       floridaEvents.push(element)
       const title = $(element).text().toLowerCase();
@@ -650,7 +653,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
     });
 
     console.log(floridaEvents);
-    res.send(floridaEvents);
+    res.send(body);
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while scraping the site.' });
