@@ -594,6 +594,11 @@ app.get("/generate-text", async (req, res) => {
       const [role, content] = line.split(': ');
       return {role: role.toLowerCase(), content: content};
     });
+
+    // Ensure a system message is present
+    if (!messages.some(message => message.role === 'system')) {
+      messages.unshift({role: 'system', content: 'Initializing chat'});
+    }
     
     const response = await openai.createCompletion({
       model: "gpt-3.5-turbo",
