@@ -628,5 +628,50 @@ app.post("/generate-text", async (req, res) => {
   res.send(responseText);
 });
 
+app.post("/check-biggerpockets-forum", async (req, res) => {
+  let options = {};
+
+  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+    options = {
+      args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+      defaultViewport: chrome.defaultViewport,
+      executablePath: await chrome.executablePath,
+      headless: true,
+      ignoreHTTPSErrors: true,
+    };
+  }
+
+  const browser = await puppeteer.launch(options);
+
+  // Open a new page and navigate to the login page
+  const page = await browser.newPage();
+  await page.goto(
+    "https://www.biggerpockets.com/forums/521-real-estate-events-meetups"
+  );
+
+  let floridaEvents = await page.evaluate(() =>
+    Array.from(
+      document.querySelectorAll("a.simplified-forums__topic-content__link")
+    ).filter((link) =>
+      variations.some((variation) =>
+        link.innerText.toLowerCase().includes(variation)
+      )
+    )
+      ? ""
+      : Array.from(
+          document.querySelectorAll("a.simplified-forums__topic-content__link")
+        )
+          .filter((link) =>
+            variations.some((variation) =>
+              link.innerText.toLowerCase().includes(variation)
+            )
+          )
+          .map((link) => [{ title: link.innerText }, { link: link.href }])
+  );
+
+  console.log(floridaEvents);
+  res.send(floridaEvents);
+});
+
 
 module.exports = app;
