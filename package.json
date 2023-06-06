@@ -20,7 +20,8 @@
     "puppeteer-core": "^6",
     "request": "^2.88.2",
     "util": "^0.12.5",
-     "openai": "^3.2.1"
+     "openai": "^3.2.1",
+    "cors": "^2.8.5",
   },
   "devDependencies": {
     "puppeteer": "^16.2.0"
