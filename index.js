@@ -683,7 +683,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   }, variations);
 
   console.log(floridaEvents);
-  res.send(allLinks);
+  res.send(await allLinks);
 });
 
 
