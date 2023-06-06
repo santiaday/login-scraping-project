@@ -633,8 +633,7 @@ const cheerio = require('cheerio');
 
 app.get("/check-biggerpockets-forum", async (req, res) => {
   try {
-    //const variations = ["florida", "fl.", "f.l.", "f.l"];
-    let variations = ["lend"];
+    const variations = ["florida", "fl.", "f.l.", "f.l"];
     const url = "https://www.biggerpockets.com/forums/521-real-estate-events-meetups";
     const response = await axios.get(url);
 
