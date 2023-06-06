@@ -627,7 +627,7 @@ app.post("/generate-text", async (req, res) => {
 
   res.send(responseText);
 });
-app.post("/check-biggerpockets-forum", async (req, res) => {
+app.get("/check-biggerpockets-forum", async (req, res) => {
    const variations = ["lend" , "lends"];
   let options = {};
 
