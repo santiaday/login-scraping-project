@@ -627,7 +627,6 @@ app.post("/generate-text", async (req, res) => {
 
   res.send(responseText);
 });
-
 app.post("/check-biggerpockets-forum", async (req, res) => {
   let options = {};
 
@@ -648,6 +647,9 @@ app.post("/check-biggerpockets-forum", async (req, res) => {
   await page.goto(
     "https://www.biggerpockets.com/forums/521-real-estate-events-meetups"
   );
+
+  // let variations = ["florida", "fl.", "f.l.", "f.l"];
+  let variations = ["lend"];
 
   let floridaEvents = await page.evaluate(() =>
     Array.from(
@@ -670,7 +672,7 @@ app.post("/check-biggerpockets-forum", async (req, res) => {
   );
 
   console.log(floridaEvents);
-  res.send(floridaEvents);
+  res.send("hey");
 });
 
 
