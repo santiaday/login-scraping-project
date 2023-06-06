@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
@@ -7,6 +8,8 @@ const { Cluster } = require("puppeteer-cluster");
 
 let chrome = {};
 let puppeteer;
+
+app.use(cors());
 
 if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   chrome = require("chrome-aws-lambda");
