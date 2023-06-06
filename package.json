@@ -22,7 +22,8 @@
     "util": "^0.12.5",
      "openai": "^3.2.1",
     "cors": "^2.8.5",
-     "cheerio": "^1.0.0-rc.12"
+     "cheerio": "^1.0.0-rc.12",
+        "axios": "^1.4.0"
   },
   "devDependencies": {
     "puppeteer": "^16.2.0"
