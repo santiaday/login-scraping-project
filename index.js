@@ -649,7 +649,7 @@ app.post("/check-biggerpockets-forum", async (req, res) => {
   );
 
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
-  let variations = ["lend"];
+  let variations = ["lend" , "lends"];
 
   let floridaEvents = await page.evaluate(() =>
     Array.from(
@@ -672,7 +672,7 @@ app.post("/check-biggerpockets-forum", async (req, res) => {
   );
 
   console.log(floridaEvents);
-  res.send("hey");
+  res.send(floridaEvents);
 });
 
 
