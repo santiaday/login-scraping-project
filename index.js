@@ -593,45 +593,39 @@ app.get("/webflowGithub", async (req, res) => {
 
 const { Configuration, OpenAIApi } = require("openai");
 
-app.get("/generate-text", async (req, res) => {
+import { Configuration, OpenAIApi } from "openai";
+
+app.post("/generate-text", async (req, res) => {
   const prompt = decodeURIComponent(req.query.prompt);
-  console.log(prompt);
 
   const configuration = new Configuration({
     apiKey: process.env.openai,
   });
-  
+
   const openai = new OpenAIApi(configuration);
+  let responseText = "";
   try {
-    // Separate the conversation into system, user, and assistant messages
-const messages = prompt.split('\n').map((line, index) => {
-  if (line.includes(': ')) {
-    const [role, content] = line.split(': ');
-    return {role: role.toLowerCase(), content: content};
-  } else {
-    console.error(`Invalid message format: ${line}`);
-    return null;
-  }
-}).filter(message => message !== null);
-
-    // Ensure a system message is present
-    if (!messages.some(message => message.role === 'system')) {
-      messages.unshift({role: 'system', content: 'Initializing chat'});
-    }
-    
-    const response = await openai.createCompletion({
-      model: "gpt-3.5-turbo",
-      messages: messages,
-    });
-
-    const botResponse = response.data.choices[0].message.content;
-    console.log(botResponse);
-    
-    res.send(botResponse);
-    
+    const response = await openai
+      .createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: JSON.parse(prompt),
+        temperature: 0.5,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+      })
+      .then((res) => {
+        responseText = res.data.choices[0].message.content;
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   } catch (error) {
     console.error(error);
   }
+
+  res.send(responseText);
 });
+
 
 module.exports = app;
