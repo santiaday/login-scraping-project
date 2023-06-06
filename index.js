@@ -25,8 +25,6 @@ app.use((req, res, next) => {
   next();
 });
 
-res.header("Access-Control-Allow-Origin", "*");
-
 app.options('*', (req, res) => {
   // Pre-flight request. Reply successfully:
   res.header('Access-Control-Allow-Origin', 'https://santiaday.github.io');
