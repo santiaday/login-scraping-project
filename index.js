@@ -641,6 +641,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 
     let floridaEvents = [];
     $("a.simplified-forums__topic-content__link").each((index, element) => {
+      floridaEvents.push(element)
       const title = $(element).text().toLowerCase();
       const link = $(element).attr('href');
       if (variations.some(variation => title.includes(variation))) {
