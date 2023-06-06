@@ -576,7 +576,7 @@ const { Configuration, OpenAIApi } = require("openai");
 app.get("/generate-text", async (req, res) => {
   console.log(req.query.prompt);
   const configuration = new Configuration({
-    apiKey: "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",
+    apiKey: process.env.openai,
   });
   const openai = new OpenAIApi(configuration);
   try {
