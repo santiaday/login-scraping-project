@@ -627,58 +627,33 @@ app.post("/generate-text", async (req, res) => {
 
   res.send(responseText);
 });
+const cheerio = require('cheerio');
+
 app.get("/check-biggerpockets-forum", async (req, res) => {
-   const variations = ["lend" , "lends"];
-  (async () => {
-  let options = {};
+  try {
+    const variations = ["lend" , "lends"];
+    const url = "https://www.biggerpockets.com/forums/521-real-estate-events-meetups";
 
-  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-    options = {
-      args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
-      defaultViewport: chrome.defaultViewport,
-      executablePath: await chrome.executablePath,
-      headless: true,
-      ignoreHTTPSErrors: true,
-    };
+    const response = await fetch(url);
+    const body = await response.text();
+
+    const $ = cheerio.load(body);
+
+    let floridaEvents = [];
+    $("a.simplified-forums__topic-content__link").each((index, element) => {
+      const title = $(element).text().toLowerCase();
+      const link = $(element).attr('href');
+      if (variations.some(variation => title.includes(variation))) {
+        floridaEvents.push({ title, link });
+      }
+    });
+
+    console.log(floridaEvents);
+    res.send(floridaEvents);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'An error occurred while scraping the site.' });
   }
-
-  const browser = await puppeteer.launch(options);
-
-  // Open a new page and navigate to the login page
-  const page = await browser.newPage();
-  await page.goto(
-    "https://www.biggerpockets.com/forums/521-real-estate-events-meetups"
-  );
-
-  
-  
-  // let variations = ["florida", "fl.", "f.l.", "f.l"];
-
-
-  let floridaEvents = await page.evaluate((variations) => {
-    Array.from(
-      document.querySelectorAll("a.simplified-forums__topic-content__link")
-    ).filter((link) =>
-      variations.some((variation) =>
-        link.innerText.toLowerCase().includes(variation)
-      )
-    )
-      ? ""
-      : Array.from(
-          document.querySelectorAll("a.simplified-forums__topic-content__link")
-        )
-          .filter((link) =>
-            variations.some((variation) =>
-              link.innerText.toLowerCase().includes(variation)
-            )
-          )
-          .map((link) => [{ title: link.innerText }, { link: link.href }]);
-  }, variations);
-
-  console.log(floridaEvents);
-  res.send(floridaEvents);
-    
-  })
 });
 
 
