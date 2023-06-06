@@ -628,6 +628,7 @@ app.post("/generate-text", async (req, res) => {
   res.send(responseText);
 });
 app.post("/check-biggerpockets-forum", async (req, res) => {
+   const variations = ["lend" , "lends"];
   let options = {};
 
   if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
@@ -649,7 +650,7 @@ app.post("/check-biggerpockets-forum", async (req, res) => {
   );
 
   // let variations = ["florida", "fl.", "f.l.", "f.l"];
-  let variations = ["lend" , "lends"];
+
 
   let floridaEvents = await page.evaluate(() =>
     Array.from(
