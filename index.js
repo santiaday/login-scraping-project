@@ -639,17 +639,31 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 
     const $ = cheerio.load(response.data);
 
-    let floridaEvents = [];
+    let floridaEventsSet = new Set(); 
     $("a.simplified-forums__topic-content__link").each((index, element) => {
       const title = $(element).text().toLowerCase();
       const link = $(element).attr('href');
       if (variations.some(variation => title.includes(variation))) {
-        floridaEvents.push("https://www.biggerpockets.com/" + link);
+        floridaEvents.add("https://www.biggerpockets.com/" + link);
       }
     });
+    
+    $('.simplified-forums__card-wrapper-compact').each((i, section) => {
+  // within each section, find the link with the class "simplified-forums__topic-content__link"
+  const link = $(section).find('.simplified-forums__topic-content__link');
+
+  // within each section, find the span under the div with the specified class
+  const location = $(section).find('.simplified-forums__tag-location span:nth-child(2)');
+
+  // if the span contains the word "Nashville", add the href of the link to the array
+  if (location && location.text().includes('Nashville')) {
+    floridaEvents.add("https://www.biggerpockets.com/" + link.attr('href'));
+  }
+});
+
 
     console.log(floridaEvents);
-    res.send(floridaEvents);
+    res.send(Array.from(floridaEvents));
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'An error occurred while scraping the site.' });
