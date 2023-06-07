@@ -639,7 +639,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 
     const $ = cheerio.load(response.data);
 
-    let floridaEventsSet = new Set(); 
+    let floridaEvents = new Set(); 
     $("a.simplified-forums__topic-content__link").each((index, element) => {
       const title = $(element).text().toLowerCase();
       const link = $(element).attr('href');
