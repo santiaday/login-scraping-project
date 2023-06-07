@@ -656,7 +656,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
   const location = $(section).find('.simplified-forums__tag-location span:nth-child(2)');
 
   // if the span contains the word "Nashville", add the href of the link to the array
-  if (location && location.text().includes('Nashville')) {
+  if (location && location.text().includes('Florida')) {
     floridaEvents.add("https://www.biggerpockets.com/" + link.attr('href'));
   }
 });
