@@ -5,7 +5,6 @@ const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
 
-
 let chrome = {};
 let puppeteer;
 
@@ -23,7 +22,7 @@ app.listen(process.env.PORT || 3000, () => {
 });
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://santiaday.github.io");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
