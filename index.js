@@ -599,7 +599,9 @@ const rateLimit = require("express-rate-limit");
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour in milliseconds
   max: 5, // limit each IP to 5 requests per windowMs
-  message: "Too many requests, please try again later.",
+    handler: function(req, res, /*next*/) {
+    res.status(429).json({message: "Too many requests, please try again later."});
+  }
 });
 
 
