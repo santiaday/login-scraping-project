@@ -8,7 +8,21 @@ const { Cluster } = require("puppeteer-cluster");
 let chrome = {};
 let puppeteer;
 
-app.use(cors());
+var allowedOrigins = ['https://doorloopcrm.webflow.io', 'https://doorloop.com'];
+
+app.use(cors({
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  }
+}));
+
+// your other middleware and route handlers
 
 if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   chrome = require("chrome-aws-lambda");
@@ -19,23 +33,6 @@ if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
 
 app.listen(process.env.PORT || 3000, () => {
   console.log("Server started");
-});
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
-app.options("*", (req, res) => {
-  // Pre-flight request. Reply successfully:
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.sendStatus(200);
 });
 
 app.use(express.static("public"));
