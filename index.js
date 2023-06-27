@@ -593,9 +593,19 @@ app.get("/webflowGithub", async (req, res) => {
   return;
 });
 
+const rateLimit = require("express-rate-limit");
+
+// create rate limit middleware
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour in milliseconds
+  max: 5, // limit each IP to 5 requests per windowMs
+  message: "Too many requests, please try again later.",
+});
+
+
 const { Configuration, OpenAIApi } = require("openai");
 
-app.post("/generate-text", async (req, res) => {
+app.post("/generate-text", limiter, async (req, res) => {
   const prompt = decodeURIComponent(req.query.prompt);
 
   const configuration = new Configuration({
