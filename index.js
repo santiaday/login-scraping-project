@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
 app.options("*", (req, res) => {
   // Pre-flight request. Reply successfully:
-  res.header("Access-Control-Allow-Origin", "https://santiaday.github.io");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET, POST");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   res.sendStatus(200);
