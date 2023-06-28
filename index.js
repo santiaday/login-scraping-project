@@ -8,7 +8,7 @@ const { Cluster } = require("puppeteer-cluster");
 let chrome = {};
 let puppeteer;
 
-var allowedOrigins = ['https://doorloopcrm.webflow.io', 'https://doorloop.com', 'https://doorloopcrm-44e0371123ae2f5097e5ed3fefd.webflow.io/'];
+var allowedOrigins = ['https://doorloopcrm.webflow.io', 'https://doorloop.com', 'https://doorloopcrm-44e0371123ae2f5097e5ed3fefd.webflow.io'];
 
 app.use(cors({
   origin: function(origin, callback){
