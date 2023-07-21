@@ -588,7 +588,7 @@ app.get("/webflowGithub", async (req, res) => {
 
 const rateLimit = require("express-rate-limit");
 
-const whitelistedIps = ["23.124.120.11"];
+const whitelistedIps = ["23.124.120.11", "191.135.81.59"];
 
 // create rate limit middleware
 const limiter = rateLimit({
