@@ -11,6 +11,7 @@ let puppeteer;
 var allowedOrigins = ['https://doorloopcrm.webflow.io', 'https://doorloop.com', 'https://doorloopcrm-44e0371123ae2f5097e5ed3fefd.webflow.io'];
 
 app.use(cors());
+app.set('trust proxy', 1);
 
 // Add headers after the cors middleware
 app.use((req, res, next) => {
