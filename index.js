@@ -682,4 +682,43 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 });
 
 
+
+app.post("/validate-email", async (req, res) => {
+    const API_URL = "https://api.neverbounce.com/v4/single/check?key="+ process.env.neverbounce_key + "&email=";
+
+    // Extract email from request body
+    const email = req.body.email;
+    if (!email) {
+        return res.status(400).json({
+            status: 'error',
+            message: 'Email is required'
+        });
+    }
+
+    try {
+        const response = await fetch(API_URL + encodeURIComponent(email));
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const result = {
+            status: "success",
+            result: data.result,
+            flags: data.flags,
+            suggested_correction: data.suggested_correction,
+            execution_time: data.execution_time
+        };
+        
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            status: 'error',
+            message: 'Failed to validate email'
+        });
+    }
+});
+
+
 module.exports = app;
