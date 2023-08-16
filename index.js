@@ -690,7 +690,7 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 
 
 app.post("/validate-email", async (req, res) => {
-    const API_URL = "https://api.neverbounce.com/v4/single/check?key=private_f06a0cd47dad10dc35af3d7f3f5dbf41&email=";
+    const API_URL = "https://api.neverbounce.com/v4/single/check?key=" + process.env.neverbounce_key + "&email=";
 
     // Extract email from request query parameters
     const email = req.query.email;
