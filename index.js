@@ -15,7 +15,13 @@ app.set('trust proxy', 1);
 
 // Add headers after the cors middleware
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://www.doorloop.com");
+  const origin = req.get('origin');
+
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  
+  //res.header("Access-Control-Allow-Origin", "https://www.doorloop.com");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   next();
