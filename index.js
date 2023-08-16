@@ -716,7 +716,7 @@ app.post("/validate-email", async (req, res) => {
             execution_time: data.execution_time
         };
         
-        res.json(result);
+        res.json(data);
     } catch (error) {
         console.error(error);
         res.status(500).json({
