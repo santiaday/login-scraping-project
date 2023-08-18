@@ -726,4 +726,223 @@ app.post("/validate-email", async (req, res) => {
     }
 });
 
+async function delay(time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+function camelize(str) {
+    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    }).replace(/\s+/g, '');
+  }
+
+app.post("/changeCapterraBids", async (req, res) => {
+
+(async () => {
+    const positions = {
+        realEstatePropertyManagement: {
+            desiredPosition: 2,
+            minimumBid: 25,
+            maximumBid: 40
+        },
+        propertyManagement: {
+            desiredPosition: 2,
+            minimumBid: 20,
+            maximumBid: 35
+        },
+        commercialRealEstate: {
+            desiredPosition: 3,
+            minimumBid: 25,
+            maximumBid: 40
+        },
+        leaseManagement: {
+            desiredPosition: 4,
+            minimumBid: 15,
+            maximumBid: 20
+        },
+        commercialPropertyManagement: {
+            desiredPosition: 2,
+            minimumBid: 25,
+            maximumBid: 35
+        },
+        propertyManagementAccounting: {
+            desiredPosition: 2,
+            minimumBid: 20,
+            maximumBid: 30
+        }
+    };
+
+  let browser;
+  try {
+    browser = await puppeteer.launch({ headless: false });
+    const page = await browser.newPage();
+
+    await page.goto(
+      "https://digitalmarkets.gartner.com/bids/locations/us?channel=CA&product_id=211768",
+      { waitUntil: "networkidle2" }
+    );
+
+    // await page.setViewport({
+    //   width: 1440,
+    //   height: 783,
+    // });
+
+    const emailSelector = 'input[name="email"]';
+    await page.waitForSelector(emailSelector);
+
+    await page.type(emailSelector, "saday@doorloop.com"); // Use environment variables
+    await page.type('input[name="password"]', "D@@rL@@p.0427"); // Use environment variables
+
+    await page.click(".app_loginButton__OA6rm");
+
+    await page.waitForNavigation({ waitUntil: "networkidle0" });
+
+    const keywords = ["Real Estate Property Management", "Property Management", "Commercial Real Estate", "Lease Management", "Commercial Property Management", "Property Management Accounting"];
+    await delay(5000);
+
+    for (let keyword of keywords) {
+      const rows = await page.$$("tr.edit_bid_editBid__PJxHf");
+
+      
+
+      for (let row of rows) {
+        const span = await row.$("span.ellipsis");
+        if (!span) continue;
+
+        const text = await span.evaluate((span) => span.textContent);
+
+        if (text === keyword) {
+        const minimumBid = positions[camelize(keyword)].minimumBid
+        const maximumBid = positions[camelize(keyword)].maximumBid
+        const desiredPosition = positions[camelize(keyword)].desiredPosition
+
+        console.log(keyword + " : " + minimumBid + " : " + maximumBid + " : " + desiredPosition)
+          
+          const input = await row.$(".bidAmount");
+          if (!input) res.send("Couldnt find bid input for: " + keyword);
+
+          await input.click();
+          await delay(1000)
+          const bidAmountCell = await page.$(
+            ".bid_targets_animatedRow__iBbYt td:nth-child(1)"
+          );
+
+          const allBidCells = await page.$$(
+            ".bid_targets_animatedRow__iBbYt td:nth-child(1)"
+          );
+
+          const secondPlaceBidCell = allBidCells[1];
+          const desiredPositionBid = allBidCells[desiredPosition] ? allBidCells[desiredPosition] : allBidCells[allBidCells.length - 1];
+
+          console.log(desiredPositionBid)
+
+          if (!bidAmountCell) res.send("Couldnt find bidAmountCell for: " + keyword);;
+          if (!secondPlaceBidCell) res.send("Couldnt find secondPlaceBidCell for: " + keyword);;
+          if (!desiredPositionBid) res.send("Couldnt find desiredPositionBid for: " + keyword);;
+
+          const bidAmountStr = await bidAmountCell.evaluate((cell) =>
+            cell.textContent
+              .replace("$", "")
+              .replace("Click to Select", "")
+              .trim()
+          );
+
+          const secondPlaceBidStr = await secondPlaceBidCell.evaluate((cell) =>
+            cell.textContent
+              .replace("$", "")
+              .replace("Click to Select", "")
+              .trim()
+          );
+
+          const bidAmount = parseFloat(bidAmountStr);
+          const secondBidAmout = parseFloat(secondPlaceBidStr);
+          let desiredValue = bidAmount - 0.25;
+          const currentValueStr = await input.evaluate((input) =>
+            input.value.replace("$", "").trim()
+          );
+
+          if (!currentValueStr) res.send("Couldnt find currentValueStr for: " + keyword);
+
+          const currentValue = parseFloat(currentValueStr);
+
+        //   console.log(
+        //     "Number 1 spot bid for keyword " +
+        //       keyword +
+        //       ": " +
+        //       bidAmount.toFixed(2)
+        //   );
+
+        //   console.log(
+        //     "Number 2 spot bid for keyword " +
+        //       keyword +
+        //       ": " +
+        //       secondBidAmout.toFixed(2)
+        //   );
+
+        //   console.log(
+        //     "DoorLoop current bid for keyword " +
+        //       keyword +
+        //       ": " +
+        //       currentValue.toFixed(2)
+        //   );
+
+
+          if(bidAmount < minimumBid){
+            desiredValue = minimumBid;
+          }else if((bidAmount - 0.50) < maximumBid){
+            desiredValue = bidAmount - 0.50;
+          }else{
+            desiredValue = maximumBid
+          }
+
+        //   if (currentValue === bidAmount && currentValue > secondBidAmout) {
+        //     desiredValue = secondBidAmout - 0.25;
+        //     console.log("Calculated value: " + desiredValue);
+        //   }
+
+        //   console.log(
+        //     "DoorLoop desired bid for keyword " +
+        //       keyword +
+        //       ": " +
+        //       currentValue ===
+        //       bidAmount
+        //       ? desiredValue.toFixed(2)
+        //       : (secondBidAmout - 0.25).toFixed(2)
+        //   );
+
+
+
+          if (currentValue !== desiredValue) {
+            await input.click();
+            await input.evaluate((input) =>
+              input.setSelectionRange(0, input.value.length)
+            );
+            for (let i = 0; i < currentValue.toString().length; i++) {
+              await page.keyboard.press("Backspace");
+            }
+
+            console.log("Inputting value: " + desiredValue);
+            await input.type(desiredValue.toFixed(2));
+            await delay(2000);
+          }
+
+          break;
+        }
+      }
+    }
+
+    await page.click("div.buttonStack > button.common_btn__6dKcF")
+    await delay(5000)
+    res.send("200: Success")
+
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.json(error);
+  } finally {
+    if (browser) await browser.close();
+  }
+})();
+  
+})
+
 module.exports = app;
