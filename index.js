@@ -774,7 +774,11 @@ app.get("/changeCapterraBids", async (req, res) => {
 
   let browser;
   try {
-    browser = await puppeteer.launch({ headless: false });
+    browser = await puppeteer.launch({
+  headless: true,
+  executablePath: await chrome.executablePath,
+  args: chrome.args
+});
     const page = await browser.newPage();
 
     await page.goto(
