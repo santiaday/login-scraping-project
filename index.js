@@ -736,7 +736,7 @@ function camelize(str) {
     }).replace(/\s+/g, '');
   }
 
-app.post("/changeCapterraBids", async (req, res) => {
+app.get("/changeCapterraBids", async (req, res) => {
 
 (async () => {
     const positions = {
