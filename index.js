@@ -729,7 +729,7 @@ app.post("/validate-email", async (req, res) => {
     }
 });
 
-const { chromium } = require("playwright"); // Importing Playwright's chromium object
+const playwright = require("playwright-aws-lambda");
 
 async function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
@@ -796,8 +796,8 @@ options = {
     },
   };
 
-  const browser = await chromium.launch(options); // Launching browser using Playwright's chromium
-
+const browser = await playwright.launchChromium(options); // Launching browser using Playwright's chromium
+  
   try {
     const context = await browser.newContext({
       userAgent:
