@@ -736,9 +736,9 @@ function camelize(str) {
     }).replace(/\s+/g, '');
   }
 
-const useChromium = require("@sparticuz/chromium");
 
 app.get("/changeCapterraBids", async (req, res) => {
+  process.env.AWS_EXECUTION_ENV = "AWS_Lambda_nodejs14.x";
 
     /*let options = {};
 
@@ -792,10 +792,10 @@ app.get("/changeCapterraBids", async (req, res) => {
 
 
 const browser = await puppeteer.launch({
-    args: useChromium.args,
-    defaultViewport: useChromium.defaultViewport,
-    executablePath: await useChromium.executablePath(),
-    headless: useChromium.headless,
+    args: chrome.args,
+    defaultViewport: chrome.defaultViewport,
+    executablePath: await chrome.executablePath(),
+    headless: chrome.headless,
   });
     const page = await browser.newPage();
 
