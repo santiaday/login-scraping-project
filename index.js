@@ -729,111 +729,132 @@ app.post("/validate-email", async (req, res) => {
     }
 });
 
+const { chromium } = require("playwright"); // Importing Playwright's chromium object
+
 async function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
 
-function camelize(str) {
-    return str.replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
-      return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    }).replace(/\s+/g, '');
+async function typeLikeHuman(page, selector, text) {
+  for (let char of text) {
+    await page.type(selector, char);
+    await page.waitForTimeout(50 + Math.random() * 100); // waits between 50 to 150ms
   }
+}
+
+function camelize(str) {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, "");
+}
 
 
 app.get("/changeCapterraBids", async (req, res) => {
-  process.env.AWS_EXECUTION_ENV = "AWS_Lambda_nodejs14.x";
+let options = {};
 
-  if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-    options = {
-      args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
-      defaultViewport: chrome.defaultViewport,
-      executablePath: await chrome.executablePath,
-      headless: true,
-      ignoreHTTPSErrors: true,
-    };
-  }
+//if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+options = {
+  args: ["--hide-scrollbars", "--disable-web-security"],
+  headless: true,
+  ignoreHTTPSErrors: true,
+};
+//}
 
-    /*let options = {};
-
-    if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-      options = {
-        args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
-        defaultViewport: chrome.defaultViewport,
-        executablePath: await chrome.executablePath,
-        headless: true,
-        ignoreHTTPSErrors: true,
-      };
-    }*/
-
-  
 (async () => {
-    const positions = {
-        realEstatePropertyManagement: {
-            desiredPosition: 2,
-            minimumBid: 25,
-            maximumBid: 40
-        },
-        propertyManagement: {
-            desiredPosition: 2,
-            minimumBid: 20,
-            maximumBid: 35
-        },
-        commercialRealEstate: {
-            desiredPosition: 3,
-            minimumBid: 25,
-            maximumBid: 40
-        },
-        leaseManagement: {
-            desiredPosition: 4,
-            minimumBid: 15,
-            maximumBid: 20
-        },
-        commercialPropertyManagement: {
-            desiredPosition: 2,
-            minimumBid: 25,
-            maximumBid: 35
-        },
-        propertyManagementAccounting: {
-            desiredPosition: 2,
-            minimumBid: 20,
-            maximumBid: 30
-        }
-    };
+  const positions = {
+    realEstatePropertyManagement: {
+      desiredPosition: 2,
+      minimumBid: 25,
+      maximumBid: 40,
+    },
+    propertyManagement: {
+      desiredPosition: 2,
+      minimumBid: 20,
+      maximumBid: 35,
+    },
+    commercialRealEstate: {
+      desiredPosition: 3,
+      minimumBid: 25,
+      maximumBid: 40,
+    },
+    leaseManagement: {
+      desiredPosition: 4,
+      minimumBid: 15,
+      maximumBid: 20,
+    },
+    commercialPropertyManagement: {
+      desiredPosition: 2,
+      minimumBid: 25,
+      maximumBid: 35,
+    },
+    propertyManagementAccounting: {
+      desiredPosition: 2,
+      minimumBid: 20,
+      maximumBid: 30,
+    },
+  };
+
+  const browser = await chromium.launch(options); // Launching browser using Playwright's chromium
 
   try {
-
-
-
-    let browser = await puppeteer.launch(options);
-    const page = await browser.newPage();
+    const context = await browser.newContext({
+      userAgent:
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    });
+    const page = await context.newPage();
 
     await page.goto(
       "https://digitalmarkets.gartner.com/bids/locations/us?channel=CA&product_id=211768",
-      { waitUntil: "networkidle2" }
+      { waitUntil: "networkidle" }
     );
+
+    await page.screenshot({ path: "screenshot.png", fullPage: true });
 
     // await page.setViewport({
     //   width: 1440,
     //   height: 783,
     // });
 
+    await page.setViewportSize({ width: 1980, height: 1080 });
     const emailSelector = 'input[name="email"]';
-    await page.waitForSelector(emailSelector);
+    // await page.waitForSelector(emailSelector);
 
-    await page.type(emailSelector, "saday@doorloop.com"); // Use environment variables
-    await page.type('input[name="password"]', "D@@rL@@p.0427"); // Use environment variables
+    // await page.type(emailSelector, "saday@doorloop.com"); // Use environment variables
+    // await delay(2000);
+    // await page.type('input[name="password"]', "q4A5%2KHqYU7Emkf"); // Use environment variables
 
-    await page.click(".app_loginButton__OA6rm");
+    // await page.click(".gdm-icon.gdm-icon-eye-close.gdm-icon-md");
+    // await page.screenshot({ path: "screenshot2.png", fullPage: true });
+    // await delay(2000);
 
-    await page.waitForNavigation({ waitUntil: "networkidle0" });
+    await page.focus(emailSelector);
+    await typeLikeHuman(page, emailSelector, "saday@doorloop.com");
+    await delay(2000);
+    await page.focus('input[name="password"]');
+    await typeLikeHuman(page, 'input[name="password"]', "q4A5%2KHqYU7Emkf");
 
-    const keywords = ["Real Estate Property Management", "Property Management", "Commercial Real Estate", "Lease Management", "Commercial Property Management", "Property Management Accounting"];
+    const loginButton = await page.$(".app_loginButton__OA6rm");
+    await loginButton.hover();
+    await page.waitForTimeout(500);
+    await loginButton.click();
+
+    //await page.waitForNavigation({ waitUntil: "domcontentloaded" });
+
+    const keywords = [
+      "Real Estate Property Management",
+      "Property Management",
+      "Commercial Real Estate",
+      "Lease Management",
+      "Commercial Property Management",
+      "Property Management Accounting",
+    ];
     await delay(5000);
+    await page.screenshot({ path: "screenshot2.png", fullPage: true });
 
     for (let keyword of keywords) {
       const rows = await page.$$("tr.edit_bid_editBid__PJxHf");
-
-      
 
       for (let row of rows) {
         const span = await row.$("span.ellipsis");
@@ -842,17 +863,25 @@ app.get("/changeCapterraBids", async (req, res) => {
         const text = await span.evaluate((span) => span.textContent);
 
         if (text === keyword) {
-        const minimumBid = positions[camelize(keyword)].minimumBid
-        const maximumBid = positions[camelize(keyword)].maximumBid
-        const desiredPosition = positions[camelize(keyword)].desiredPosition
+          const minimumBid = positions[camelize(keyword)].minimumBid;
+          const maximumBid = positions[camelize(keyword)].maximumBid;
+          const desiredPosition = positions[camelize(keyword)].desiredPosition;
 
-        console.log(keyword + " : " + minimumBid + " : " + maximumBid + " : " + desiredPosition)
-          
+          console.log(
+            keyword +
+              " : " +
+              minimumBid +
+              " : " +
+              maximumBid +
+              " : " +
+              desiredPosition
+          );
+
           const input = await row.$(".bidAmount");
-          if (!input) res.send("Couldnt find bid input for: " + keyword);
+          //if (!input) res.send("Couldnt find bid input for: " + keyword);
 
           await input.click();
-          await delay(1000)
+          await delay(1000);
           const bidAmountCell = await page.$(
             ".bid_targets_animatedRow__iBbYt td:nth-child(1)"
           );
@@ -862,13 +891,16 @@ app.get("/changeCapterraBids", async (req, res) => {
           );
 
           const secondPlaceBidCell = allBidCells[1];
-          const desiredPositionBid = allBidCells[desiredPosition] ? allBidCells[desiredPosition] : allBidCells[allBidCells.length - 1];
+          const desiredPositionBid = allBidCells[desiredPosition]
+            ? allBidCells[desiredPosition]
+            : allBidCells[allBidCells.length - 1];
 
-          console.log(desiredPositionBid)
-
-          if (!bidAmountCell) res.send("Couldnt find bidAmountCell for: " + keyword);;
-          if (!secondPlaceBidCell) res.send("Couldnt find secondPlaceBidCell for: " + keyword);;
-          if (!desiredPositionBid) res.send("Couldnt find desiredPositionBid for: " + keyword);;
+          /*if (!bidAmountCell)
+            res.send("Couldnt find bidAmountCell for: " + keyword);
+          if (!secondPlaceBidCell)
+            res.send("Couldnt find secondPlaceBidCell for: " + keyword);
+          if (!desiredPositionBid)
+            res.send("Couldnt find desiredPositionBid for: " + keyword);*/
 
           const bidAmountStr = await bidAmountCell.evaluate((cell) =>
             cell.textContent
@@ -891,59 +923,59 @@ app.get("/changeCapterraBids", async (req, res) => {
             input.value.replace("$", "").trim()
           );
 
-          if (!currentValueStr) res.send("Couldnt find currentValueStr for: " + keyword);
+          // if (!currentValueStr)
+          //   res.send("Couldnt find currentValueStr for: " + keyword);
 
           const currentValue = parseFloat(currentValueStr);
 
-        //   console.log(
-        //     "Number 1 spot bid for keyword " +
-        //       keyword +
-        //       ": " +
-        //       bidAmount.toFixed(2)
-        //   );
+          console.log(
+            "Number 1 spot bid for keyword " +
+              keyword +
+              ": " +
+              bidAmount.toFixed(2)
+          );
 
-        //   console.log(
-        //     "Number 2 spot bid for keyword " +
-        //       keyword +
-        //       ": " +
-        //       secondBidAmout.toFixed(2)
-        //   );
+          console.log(
+            "Number 2 spot bid for keyword " +
+              keyword +
+              ": " +
+              secondBidAmout.toFixed(2)
+          );
 
-        //   console.log(
-        //     "DoorLoop current bid for keyword " +
-        //       keyword +
-        //       ": " +
-        //       currentValue.toFixed(2)
-        //   );
+          console.log(
+            "DoorLoop current bid for keyword " +
+              keyword +
+              ": " +
+              currentValue.toFixed(2)
+          );
 
-
-          if(bidAmount < minimumBid){
+          if (bidAmount < minimumBid) {
             desiredValue = minimumBid;
-          }else if((bidAmount - 0.50) < maximumBid){
-            desiredValue = bidAmount - 0.50;
-          }else{
-            desiredValue = maximumBid
+          } else if (bidAmount - 0.5 < maximumBid) {
+            desiredValue = bidAmount - 0.5;
+          } else {
+            desiredValue = maximumBid;
           }
 
-        //   if (currentValue === bidAmount && currentValue > secondBidAmout) {
-        //     desiredValue = secondBidAmout - 0.25;
-        //     console.log("Calculated value: " + desiredValue);
-        //   }
+          //   if (currentValue === bidAmount && currentValue > secondBidAmout) {
+          //     desiredValue = secondBidAmout - 0.25;
+          //     console.log("Calculated value: " + desiredValue);
+          //   }
 
-        //   console.log(
-        //     "DoorLoop desired bid for keyword " +
-        //       keyword +
-        //       ": " +
-        //       currentValue ===
-        //       bidAmount
-        //       ? desiredValue.toFixed(2)
-        //       : (secondBidAmout - 0.25).toFixed(2)
-        //   );
-
-
+          //   console.log(
+          //     "DoorLoop desired bid for keyword " +
+          //       keyword +
+          //       ": " +
+          //       currentValue ===
+          //       bidAmount
+          //       ? desiredValue.toFixed(2)
+          //       : (secondBidAmout - 0.25).toFixed(2)
+          //   );
 
           if (currentValue !== desiredValue) {
             await input.click();
+
+            // Clearing input
             await input.evaluate((input) =>
               input.setSelectionRange(0, input.value.length)
             );
@@ -951,9 +983,24 @@ app.get("/changeCapterraBids", async (req, res) => {
               await page.keyboard.press("Backspace");
             }
 
-            console.log("Inputting value: " + desiredValue);
-            await input.type(desiredValue.toFixed(2));
-            await delay(2000);
+            await page.waitForTimeout(2000);
+
+            console.log("Inputting value: " + desiredValue.toFixed(2));
+
+            // Using fill to ensure the entire value is inserted
+            await input.fill(desiredValue.toFixed(2));
+
+            await page.waitForTimeout(2000);
+
+            // Validate the input value
+            const typedValue = await input.inputValue();
+            if (typedValue !== "$" + desiredValue.toFixed(2)) {
+              throw new Error(
+                `Failed to input desired value. Expected "${desiredValue.toFixed(
+                  2
+                )}" but got "${typedValue}"`
+              );
+            }
           }
 
           break;
@@ -961,13 +1008,12 @@ app.get("/changeCapterraBids", async (req, res) => {
       }
     }
 
-    await page.click("div.buttonStack > button.common_btn__6dKcF")
-    await delay(5000)
-    res.send("200: Success")
-
+    await page.click("div.buttonStack > button.common_btn__6dKcF");
+    await delay(5000);
+    //res.send("200: Success");
   } catch (error) {
     console.error(`Weird Error: ${error.message}`);
-    res.json(error);
+    //res.json(error);
   } finally {
     if (browser) await browser.close();
   }
