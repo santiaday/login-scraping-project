@@ -6,8 +6,8 @@ const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
 import chromium from 'chrome-aws-lambda';
 
-let chrome = {};
-let puppeteer;
+//let chrome = {};
+//let puppeteer;
 
 var allowedOrigins = ['https://doorloopcrm.webflow.io', 'https://doorloop.com', 'https://doorloopcrm-44e0371123ae2f5097e5ed3fefd.webflow.io'];
 
@@ -36,12 +36,12 @@ app.listen(process.env.PORT || 3000, () => {
 
 app.use(express.static("public"));
 
-if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+/*if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   chrome = require("chrome-aws-lambda");
   puppeteer = require("puppeteer-core");
 } else {
   puppeteer = require("puppeteer-core");
-}
+}*/
 
 app.get("/get-lead-information", (req, res) => {
   if (req.query.token !== "wn^$$5SU6a972YvG") {
@@ -788,13 +788,12 @@ app.get("/changeCapterraBids", async (req, res) => {
 
   try {
 
-    const browser = await chromium.puppeteer.launch({
-    args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: true,
-    ignoreHTTPSErrors: true,
-  })
+    const browser = await puppeteer.launch({
+      args: chrome2.args,
+      executablePath: await chrome2.executablePath,
+      headless: chrome2.headless,
+    });
+    const page = await browser.newPage();
     const page = await browser.newPage();
 
     await page.goto(
