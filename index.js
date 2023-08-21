@@ -791,10 +791,10 @@ app.get("/changeCapterraBids", async (req, res) => {
 
 if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   options = {
-    args: chrome.args,
-    defaultViewport: chrome.defaultViewport,
-    executablePath: await chrome.executablePath,
-    headless: chrome.headless,
+    args: chrome2.args,
+    defaultViewport: chrome2.defaultViewport,
+    executablePath: await chrome2.executablePath,
+    headless: chrome2.headless,
     ignoreHTTPSErrors: true,
   };
 } else {
@@ -803,7 +803,7 @@ if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   };
 }
 
-const browser = await chrome.launch(options);
+const browser = await puppeteer.launch(options);
     const page = await browser.newPage();
 
     await page.goto(
