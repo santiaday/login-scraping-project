@@ -16,6 +16,7 @@
     "express-rate-limit": "^6.7.0",
     "node-fetch": "^2.6.9",
     "octokit": "^2.0.18",
+    "dotenv": "^16.3.1",
     "puppeteer": "^16.2.0",
     "puppeteer-cluster": "^0.23.0",
     "puppeteer-core": "^6",
