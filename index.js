@@ -4,6 +4,7 @@ const app = express();
 const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
+import chromium from 'chrome-aws-lambda';
 
 let chrome = {};
 let puppeteer;
@@ -787,7 +788,13 @@ app.get("/changeCapterraBids", async (req, res) => {
 
   try {
 
-    const browser = await puppeteer.launch();
+    const browser = await chromium.puppeteer.launch({
+    args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+    headless: true,
+    ignoreHTTPSErrors: true,
+  })
     const page = await browser.newPage();
 
     await page.goto(
