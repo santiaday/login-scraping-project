@@ -4,6 +4,7 @@ const app = express();
 const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
+require("dotenv").config();
 
 //let chrome = {};
 //let puppeteer;
