@@ -790,7 +790,6 @@ app.get("/changeCapterraBids", async (req, res) => {
 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    const page = await browser.newPage();
 
     await page.goto(
       "https://digitalmarkets.gartner.com/bids/locations/us?channel=CA&product_id=211768",
