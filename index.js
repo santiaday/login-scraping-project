@@ -4,7 +4,7 @@ const app = express();
 const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
-import chromium from 'chrome-aws-lambda';
+const chromium = require("chrome-aws-lambda");
 
 //let chrome = {};
 //let puppeteer;
