@@ -796,6 +796,7 @@ if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
     executablePath: await chrome2.executablePath,
     headless: chrome2.headless,
     ignoreHTTPSErrors: true,
+    ignoreDefaultArgs: ['--disable-extensions']
   };
 } else {
   options = {
