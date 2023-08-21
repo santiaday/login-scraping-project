@@ -4,7 +4,6 @@ const app = express();
 const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
-const puppeteer = require("puppeteer-core");
 
 //let chrome = {};
 //let puppeteer;
@@ -36,12 +35,12 @@ app.listen(process.env.PORT || 3000, () => {
 
 app.use(express.static("public"));
 
-/*if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
   chrome = require("chrome-aws-lambda");
   puppeteer = require("puppeteer-core");
 } else {
   puppeteer = require("puppeteer-core");
-}*/
+}
 
 app.get("/get-lead-information", (req, res) => {
   if (req.query.token !== "wn^$$5SU6a972YvG") {
