@@ -729,7 +729,7 @@ app.post("/validate-email", async (req, res) => {
     }
 });
 
-const { chromium } = require("playwright-aws-lambda");
+const { chromium } = require("playwright");
 
 async function delay(time) {
   return new Promise((resolve) => setTimeout(resolve, time));
