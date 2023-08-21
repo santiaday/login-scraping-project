@@ -738,7 +738,7 @@ function camelize(str) {
 
 app.get("/changeCapterraBids", async (req, res) => {
 
-    /*  let options = {};
+    let options = {};
 
     if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
       options = {
@@ -748,7 +748,7 @@ app.get("/changeCapterraBids", async (req, res) => {
         headless: true,
         ignoreHTTPSErrors: true,
       };
-    }*/
+    }
 
   
 (async () => {
@@ -787,7 +787,7 @@ app.get("/changeCapterraBids", async (req, res) => {
 
   try {
 
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch(options);
     const page = await browser.newPage();
 
     await page.goto(
