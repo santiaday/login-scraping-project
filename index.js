@@ -736,6 +736,8 @@ function camelize(str) {
     }).replace(/\s+/g, '');
   }
 
+const useChromium = require("@sparticuz/chromium");
+
 app.get("/changeCapterraBids", async (req, res) => {
 
     /*let options = {};
@@ -787,24 +789,14 @@ app.get("/changeCapterraBids", async (req, res) => {
 
   try {
 
-    let options = {};
 
-if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-  options = {
-    args: chrome2.args,
-    defaultViewport: chrome2.defaultViewport,
-    executablePath: await chrome2.executablePath,
-    headless: chrome2.headless,
-    ignoreHTTPSErrors: true,
-    ignoreDefaultArgs: ['--disable-extensions']
-  };
-} else {
-  options = {
-    headless: true
-  };
-}
 
-const browser = await puppeteer.launch(options);
+const browser = await puppeteer.launch({
+    args: useChromium.args,
+    defaultViewport: useChromium.defaultViewport,
+    executablePath: await useChromium.executablePath(),
+    headless: useChromium.headless,
+  });
     const page = await browser.newPage();
 
     await page.goto(
