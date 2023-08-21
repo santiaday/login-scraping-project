@@ -951,7 +951,7 @@ app.get("/changeCapterraBids", async (req, res) => {
     res.send("200: Success")
 
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    console.error(`Weird Error: ${error.message}`);
     res.json(error);
   } finally {
     if (browser) await browser.close();
