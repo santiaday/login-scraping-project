@@ -4,7 +4,7 @@ const app = express();
 const fetch = require("node-fetch");
 const { Octokit } = require("@octokit/core");
 const { Cluster } = require("puppeteer-cluster");
-const chromium = require("chrome-aws-lambda");
+const puppeteer = require("puppeteer-core");
 
 //let chrome = {};
 //let puppeteer;
@@ -788,11 +788,7 @@ app.get("/changeCapterraBids", async (req, res) => {
 
   try {
 
-    const browser = await puppeteer.launch({
-      args: chrome2.args,
-      executablePath: await chrome2.executablePath,
-      headless: chrome2.headless,
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const page = await browser.newPage();
 
