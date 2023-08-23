@@ -713,6 +713,8 @@ app.post("/validate-email", async (req, res) => {
 
         const data = await response.json();
         const result = {
+            url: API_URL + encodeURIComponent(email),
+            email: email,
             status: "success",
             result: data.result,
             flags: data.flags,
