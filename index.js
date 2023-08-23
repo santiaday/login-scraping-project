@@ -708,7 +708,7 @@ app.post("/validate-email", async (req, res) => {
     try {
         const response = await fetch(API_URL + encodeURIComponent(email));
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            throw new Error(`HTTP error! Status is: ${response.status}`);
         }
 
         const data = await response.json();
