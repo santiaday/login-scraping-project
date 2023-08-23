@@ -722,7 +722,7 @@ app.post("/validate-email", async (req, res) => {
             execution_time: data.execution_time
         };
         
-        res.json(data);
+        res.json(result);
     } catch (error) {
         console.error(error);
         res.status(500).json({
