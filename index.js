@@ -694,8 +694,6 @@ app.get("/check-biggerpockets-forum", async (req, res) => {
 
 
 app.post("/record-searches", async (req, res) => {
-    const API_URL = "https://hooks.zapier.com/hooks/catch/8900275/32nxv42/";
-
     // Extract email from request query parameters
     const keyword = req.query.keyword;
     if (!keyword) {
@@ -704,24 +702,10 @@ app.post("/record-searches", async (req, res) => {
             message: 'Keyword is required'
         });
     }
-
-    try {
-        const response = await fetch(API_URL, {
-          type: "POST",
-          body: JSON.stringify(keyword)
-        });
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status is: ${response.status}`);
-        }
-        
-        res.json(response);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to validate email'
-        });
-    }
+fetch("https://hooks.zapier.com/hooks/catch/8900275/32nxv42/", {
+      method: 'POST',
+      body: JSON.stringify({ keyword: keyword }),
+    });
 });
 
 
