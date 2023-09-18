@@ -706,6 +706,7 @@ fetch("https://hooks.zapier.com/hooks/catch/8900275/32nxv42/", {
       method: 'POST',
       body: JSON.stringify({ keyword: keyword }),
     });
+  res.send("success")
 });
 
 
