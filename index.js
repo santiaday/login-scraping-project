@@ -253,7 +253,8 @@ app.post("/generate-text", async (req, res) => {
         responseText = res.data.choices[0].message.content;
       })
       .catch((e) => {
-        console.log(e);
+        console.error("Error calling OpenAI API:", e.response ? e.response.data : e);
+
       });
   } catch (error) {
     console.error("Error calling OpenAI API:", error.response ? error.response.data : error);
