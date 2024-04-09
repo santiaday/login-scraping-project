@@ -230,7 +230,7 @@ const whitelistedIps = ["23.124.120.11", "191.135.81.59"];
 
 const { Configuration, OpenAIApi } = require("openai");
 
-app.post("/generate-text", limiter, async (req, res) => {
+app.post("/generate-text", async (req, res) => {
   const prompt = decodeURIComponent(req.query.prompt);
 
   const configuration = new Configuration({
