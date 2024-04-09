@@ -215,17 +215,17 @@ const rateLimit = require("express-rate-limit");
 const whitelistedIps = ["23.124.120.11", "191.135.81.59"];
 
 // create rate limit middleware
-const limiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour in milliseconds
-  max: 5, // limit each IP to 5 requests per windowMs
-  handler: function(req, res, /*next*/) {
-    res.status(429).json({message: "Too many requests, please try again later."});
-  },
-  skip: function(req, res) {
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    return whitelistedIps.includes(ip);
-  }
-});
+//const limiter = rateLimit({
+//  windowMs: 60 * 60 * 1000, 
+//  max: 5, 
+//  handler: function(req, res, /*next*/) {
+//   res.status(429).json({message: "Too many requests, please try again later."});
+//  },
+//  skip: function(req, res) {
+//    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+//    return whitelistedIps.includes(ip);
+//  }
+//});
 
 
 const { Configuration, OpenAIApi } = require("openai");
