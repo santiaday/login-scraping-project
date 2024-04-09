@@ -256,6 +256,7 @@ app.post("/generate-text", limiter, async (req, res) => {
         console.log(e);
       });
   } catch (error) {
+    console.error("Error calling OpenAI API:", error.response ? error.response.data : error);
     console.error(error);
   }
 
