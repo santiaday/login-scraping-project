@@ -236,6 +236,7 @@ app.post("/generate-text", async (req, res) => {
   const configuration = new Configuration({
     apiKey: process.env.openai,
   });
+  console.log(process.env.openai)
 
   const openai = new OpenAIApi(configuration);
   let responseText = "";
